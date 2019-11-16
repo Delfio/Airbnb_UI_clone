@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, {useState, useEffect, Component} from 'react';
 import {
   View,
   SafeAreaView,
@@ -8,10 +8,13 @@ import {
   ScrollView,
   Image,
   Dimensions,
+  Animated,
+  Platform,
 } from 'react-native';
 
 import Category from '../../components/Explore/Category';
 import HomePage from '../../components/Home';
+import TapPage from '../../components/Tag';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -24,12 +27,22 @@ import Home from '../../assets/home.jpg';
 const {height, width} = Dimensions.get('window');
 
 export default function Explore() {
+  const [scrolY, setScrolY] = useState(0);
+  const [headerHeigt, setHeaderHeight] = useState(80);
+  const [endHeaderHeight, setendHeaderHeight] = useState(50);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      setHeaderHeight(120), setendHeaderHeight(90);
+    }
+  }, []);
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1}}>
         <View
           style={{
-            height: 80,
+            height: 107,
             backgroundColor: 'white',
             borderBottomWidth: 1,
             borderBottomColor: '#dddddd',
@@ -60,8 +73,22 @@ export default function Explore() {
               style={{flex: 1, fontWeight: '700', backgroundColor: 'white'}}
             />
           </View>
+          <Animated.View
+            style={{
+              flexDirection: 'row',
+              marginHorizontal: 20,
+              position: 'relative',
+              top: 10,
+            }}>
+            <TapPage name="Guest" />
+            <TapPage name="Dates" />
+          </Animated.View>
         </View>
-        <ScrollView scrollEventThrottle={16}>
+        <ScrollView
+          scrollEventThrottle={16}
+          onScroll={Animated.event([
+            {nativeEvent: {contentOffset: {y: scrolY}}},
+          ])}>
           <View style={{flex: 1, backgroundColor: 'white', paddingTop: 20}}>
             <Text
               style={{fontSize: 20, fontWeight: '700', paddingHorizontal: 20}}>
